@@ -230,13 +230,13 @@ function saveRequest($id_employee, $w_name, $key, $pc, $email, $skype, $incontac
 function saveRequest1($id_employee, $w_name, $array){
 	//CHECKING WHAT ARE THE FIELS SELECTED
 	
-	$key = $array["key"];
-	$pc = $array["pc"];
-	$incontact = $array["incontact"];
-	$email = $array["email"];
-	$skype = $array["skype"];
-	$chat = $array["chat"];
-	$box = $array["box"];
+	$key = ($array["key"] == true) ? 1 : 0;
+	$pc = ($array["pc"] == true) ? 1 : 0;
+	$incontact = ($array["incontact"] == true) ? 1 : 0;
+	$email = ($array["email"] == true) ? 1 : 0;
+	$skype = ($array["skype"] == true) ? 1 : 0;
+	$chat = ($array["chat"] == true) ? 1 : 0;
+	$box = ($array["box"] == true) ? 1 : 0;
 		
 	//CHECKING IF THERE IS ANY REQUEST IN THE REQUESTS TABLE FOR THIS EMPLOYEE
 	$exsists = 0;
@@ -250,7 +250,12 @@ function saveRequest1($id_employee, $w_name, $array){
 				$exsists = 0;
 			}
 		}
-		echo $exsists;
+		// echo "ID:" . $id_employee;
+		// echo "<br/>";
+		// echo "NAME:" . $w_name;
+		// echo "<br/>";
+		// echo "EXISTS:" . $exsists;
+		// echo "<br/>";
 		switch ($exsists){
 			case 1:
 				//...UPDATE THAT RECORD 

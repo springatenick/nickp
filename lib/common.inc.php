@@ -1,7 +1,7 @@
 <?php
 
 // Defining
-defined('LIB_PATH', str_replace("\\", "/", getcwd());
+define('LIB_PATH', str_replace("\\", "/", getcwd()));
 
 // Defining smatry dir as required here
 // http://www.smarty.net/docs/en/installing.smarty.basic.tpl
