@@ -1,11 +1,13 @@
 <?php
 
 // Defining
-defined('LIB_PATH', str_replace("\\", "/", getcwd());
+define('LIB_PATH', dirname(__FILE__));
+// Defining system path
+define('PATH', realpath(LIB_PATH . '/../'));
 
 // Defining smatry dir as required here
 // http://www.smarty.net/docs/en/installing.smarty.basic.tpl
-define('SMARTY_DIR', LIB_PATH . '/lib/libs/');
+define('SMARTY_DIR', LIB_PATH . '/libs/');
 
 // Require smarty class
 require_once(SMARTY_DIR . 'Smarty.class.php');
@@ -14,12 +16,13 @@ require_once(SMARTY_DIR . 'Smarty.class.php');
 $smarty = new Smarty();
 
 // Change templates dir
-$smarty->setTemplateDir(LIB_PATH . '/../templates/');
+$smarty->setTemplateDir(PATH . '/templates/');
+
 // Change cache dir
-$smarty->setCompileDir(LIB_PATH . '/../templates_c/');
+$smarty->setCompileDir(PATH . '/templates_c/');
 // Change configs dir
-$smarty->setConfigDir(LIB_PATH . '/../configs/');
+$smarty->setConfigDir(PATH . '/configs/');
 // Change cache path
-$smarty->setCacheDir(LIB_PATH . '/../cache/');
+$smarty->setCacheDir(PATH . '/cache/');
 
 ?>

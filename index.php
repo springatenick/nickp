@@ -4,6 +4,6 @@
 require_once('lib/common.inc.php');
 
 
-$smarty->display('index.html');
+$smarty->display('index.tpl');
 
 ?>
