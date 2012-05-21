@@ -1,0 +1,223 @@
+-- phpMyAdmin SQL Dump
+-- version 3.2.3
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: May 21, 2012 at 03:27 PM
+-- Server version: 5.1.40
+-- PHP Version: 5.3.3
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- Database: `employees`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `countries`
+--
+
+CREATE TABLE IF NOT EXISTS `countries` (
+  `id_country` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `name_country` varchar(32) NOT NULL,
+  PRIMARY KEY (`id_country`)
+) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `countries`
+--
+
+INSERT INTO `countries` (`id_country`, `name_country`) VALUES
+(1, 'UA'),
+(2, 'USA');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `departments`
+--
+
+CREATE TABLE IF NOT EXISTS `departments` (
+  `id_department` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `name_department` varchar(32) NOT NULL,
+  `location` tinyint(4) NOT NULL,
+  PRIMARY KEY (`id_department`),
+  KEY `location` (`location`),
+  KEY `location_2` (`location`),
+  KEY `location_3` (`location`),
+  KEY `location_4` (`location`)
+) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=8 ;
+
+--
+-- Dumping data for table `departments`
+--
+
+INSERT INTO `departments` (`id_department`, `name_department`, `location`) VALUES
+(1, 'CUSTOMER SERVICE - EMAIL', 1),
+(2, 'CUSTOMER SERVICE - LC', 1),
+(3, 'CUSTOMER SERVICE - PHONE', 1),
+(4, 'QUALITY ASSURANCE', 1),
+(5, 'SALES', 1),
+(6, 'SHIPPING', 1),
+(7, 'TRAINING', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employees`
+--
+
+CREATE TABLE IF NOT EXISTS `employees` (
+  `id_employee` smallint(6) NOT NULL AUTO_INCREMENT,
+  `name_employee` varchar(50) NOT NULL,
+  `p_phone` varchar(15) NOT NULL,
+  `p_email` varchar(50) NOT NULL,
+  `address` varchar(100) NOT NULL,
+  `dob` varchar(10) NOT NULL,
+  `department` tinyint(4) NOT NULL,
+  `position` tinyint(4) NOT NULL,
+  `shift` tinyint(4) NOT NULL,
+  `wage` varchar(10) NOT NULL,
+  `photo` varchar(50) NOT NULL,
+  `cv` varchar(50) NOT NULL,
+  `docs_copy` varchar(50) NOT NULL,
+  `w_name` varchar(50) NOT NULL,
+  `w_phone_ext` varchar(5) NOT NULL,
+  `w_email` varchar(50) NOT NULL,
+  `w_skype` varchar(50) NOT NULL,
+  `start_date` varchar(10) NOT NULL,
+  `end_date` varchar(10) NOT NULL,
+  `status` tinyint(4) NOT NULL,
+  `notes` text NOT NULL,
+  PRIMARY KEY (`id_employee`),
+  KEY `department` (`department`,`position`,`shift`,`status`),
+  KEY `department_2` (`department`),
+  KEY `shift` (`shift`),
+  KEY `status` (`status`),
+  KEY `position` (`position`),
+  KEY `shift_2` (`shift`)
+) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=92 ;
+
+--
+-- Dumping data for table `employees`
+--
+
+INSERT INTO `employees` (`id_employee`, `name_employee`, `p_phone`, `p_email`, `address`, `dob`, `department`, `position`, `shift`, `wage`, `photo`, `cv`, `docs_copy`, `w_name`, `w_phone_ext`, `w_email`, `w_skype`, `start_date`, `end_date`, `status`, `notes`) VALUES
+(89, '1', '1', '', '', '2012-05-21', 7, 0, 0, '', '', 'cv/1.', '', '', '', '', '', '2012-05-21', '', 0, ''),
+(90, '2', '2', '', '', '2012-05-21', 7, 0, 0, '', '', 'cv/2.', '', '', '', '', '', '2012-05-21', '', 0, ''),
+(91, 'John Smith', '+XX(XXX)XXX-XXX', '', '', '2012-05-21', 7, 0, 0, '', '', 'cv/John Smith.', '', '', '', '', '', '2012-05-21', '', 0, '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `locations`
+--
+
+CREATE TABLE IF NOT EXISTS `locations` (
+  `id_location` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `name_location` varchar(32) NOT NULL,
+  `country` tinyint(4) NOT NULL,
+  PRIMARY KEY (`id_location`),
+  KEY `country` (`country`),
+  KEY `country_2` (`country`),
+  KEY `country_3` (`country`)
+) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `locations`
+--
+
+INSERT INTO `locations` (`id_location`, `name_location`, `country`) VALUES
+(1, 'CHIGRINA', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `positions`
+--
+
+CREATE TABLE IF NOT EXISTS `positions` (
+  `id_position` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `name_position` varchar(32) NOT NULL,
+  PRIMARY KEY (`id_position`)
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `positions`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `requests`
+--
+
+CREATE TABLE IF NOT EXISTS `requests` (
+  `id_request` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `id_employee` smallint(6) NOT NULL,
+  `w_name` tinyint(4) NOT NULL,
+  `w_name_set` tinyint(3) unsigned NOT NULL,
+  `uattendkey` tinyint(4) NOT NULL,
+  `uattendkey_set` tinyint(3) unsigned NOT NULL,
+  `pc` tinyint(4) NOT NULL,
+  `pc_set` tinyint(3) unsigned NOT NULL,
+  `email` tinyint(4) NOT NULL,
+  `email_set` tinyint(3) unsigned NOT NULL,
+  `skype` tinyint(4) NOT NULL,
+  `skype_set` int(10) unsigned NOT NULL,
+  `incontact` tinyint(4) NOT NULL,
+  `incontact_set` int(10) unsigned NOT NULL,
+  `chat` tinyint(4) NOT NULL,
+  `chat_set` int(10) unsigned NOT NULL,
+  `box` tinyint(4) NOT NULL,
+  `box_set` tinyint(3) unsigned NOT NULL,
+  PRIMARY KEY (`id_request`)
+) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=44 ;
+
+--
+-- Dumping data for table `requests`
+--
+
+INSERT INTO `requests` (`id_request`, `id_employee`, `w_name`, `w_name_set`, `uattendkey`, `uattendkey_set`, `pc`, `pc_set`, `email`, `email_set`, `skype`, `skype_set`, `incontact`, `incontact_set`, `chat`, `chat_set`, `box`, `box_set`) VALUES
+(39, 53, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0),
+(40, 54, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+(41, 60, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+(42, 63, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0),
+(43, 61, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `shifts`
+--
+
+CREATE TABLE IF NOT EXISTS `shifts` (
+  `id_shift` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `name_shift` varchar(32) NOT NULL,
+  PRIMARY KEY (`id_shift`)
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `shifts`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `statuses`
+--
+
+CREATE TABLE IF NOT EXISTS `statuses` (
+  `id_status` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `name_status` varchar(32) NOT NULL,
+  PRIMARY KEY (`id_status`)
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `statuses`
+--
+
