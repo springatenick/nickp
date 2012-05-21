@@ -7,28 +7,28 @@ $arr = array();
 foreach($_POST["request"] as $key => $value){
 	switch ($value){
 		case "key":
-			$arr[]=$value;
+			$arr["key"]=true;
 			break;
 		case "w_name":
-			$arr[]=$value;
+			$arr["w_name"]=true;
 			break;
 		case "pc":
-			$arr[]=$value;
+			$arr["pc"]=true;
 			break;
-		case "inContact":
-			$arr[]=$value;
+		case "incontact":
+			$arr["incontact"]=true;
 			break;
 		case "email":
-			$arr[]=$value;
+			$arr["email"]=true;
 			break;
 		case "skype":
-			$arr[]=$value;
+			$arr["skype"]=true;
 			break;
 		case "chat":
-			$arr[]=$value;
+			$arr["chat"]=true;
 			break;
 		case "box":
-			$arr[]=$value;
+			$arr["box"]=true;
 			break;
 	}
 }

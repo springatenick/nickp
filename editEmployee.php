@@ -157,8 +157,8 @@ $id=$row["id_employee"];
 				</tr>
 				<tr>
 					<td>inContact client and account</td>
-					<td><input name="request[]" type="checkbox" value="inContact" <?php if($checkboxes["incontact"] == 1) echo "checked"; ?>></td>
-					<td><input name="request[]" type="checkbox" value="inContact_done" <?php if($checkboxes["incontact_set"] == 1) echo "checked"; ?>></td>
+					<td><input name="request[]" type="checkbox" value="incontact" <?php if($checkboxes["incontact"] == 1) echo "checked"; ?>></td>
+					<td><input name="request[]" type="checkbox" value="incontact_done" <?php if($checkboxes["incontact_set"] == 1) echo "checked"; ?>></td>
 				</tr>
 				<tr>
 					<td>Email client and account</td>
