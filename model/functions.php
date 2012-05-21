@@ -224,6 +224,64 @@ function saveRequest($id_employee, $w_name, $key, $pc, $email, $skype, $incontac
 			return false;
 	return true;
 }
+
+
+//NEW SAVE REQUEST
+function saveRequest1($id_employee, $w_name, $array){
+	//CHECKING WHAT ARE THE FIELS SELECTED
+	
+	$key = $array["key"];
+	$pc = $array["pc"];
+	$incontact = $array["incontact"];
+	$email = $array["email"];
+	$skype = $array["skype"];
+	$chat = $array["chat"];
+	$box = $array["box"];
+		
+	//CHECKING IF THERE IS ANY REQUEST IN THE REQUESTS TABLE FOR THIS EMPLOYEE
+	$exsists = 0;
+	$sql = "SELECT * FROM requests";
+	$result = mysql_query($sql) or die (mysql_error());
+		while($row = mysql_fetch_assoc($result)){
+			//IF THERE IS A RECORD IN THE TABLE WITH THE SAME ID_EMPLOYEE...
+			if ($row["id_employee"] == $id_employee){
+				$exsists = 1;
+			}else{
+				$exsists = 0;
+			}
+		}
+		echo $exsists;
+		switch ($exsists){
+			case 1:
+				//...UPDATE THAT RECORD 
+				$sql = "UPDATE requests 
+						SET 
+							w_name = $w_name,
+							uattendkey = $key,
+							pc = $pc,
+							email = $email,
+							skype = $skype,
+							incontact = $incontact,
+							chat = $chat,
+							box = $box
+						WHERE id_employee=$id_employee";
+			break;
+			case 0:
+				//...INSERT NEW
+				$sql = "INSERT INTO requests(id_employee, w_name, uattendkey, pc, email, skype, incontact, chat, box)
+							 VALUES($id_employee, $w_name, $key, $pc, $email, $skype, $incontact, $chat, $box)";
+			break;
+		return $sql;
+		}
+		//print_r($sql);
+		$result = mysql_query($sql) or die (mysql_error());
+		if(!$result)
+			return false;
+		if(!sendmail("request", $w_name, $key, $pc, $email, $skype, $incontact, $chat, $box))
+			return false;
+	return true;
+}
+
 //USED TO SAVE REQUEST_DONE PARAMETERS from editEmployee.php
 function saveRequestDone($id_employee, $w_name_done, $key_done, $pc_done, $email_done, $skype_done, $incontact_done, $chat_done, $box_done){
 	//CHECKING WHAT ARE THE FIELS SELECTED
