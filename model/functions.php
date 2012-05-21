@@ -229,7 +229,6 @@ function saveRequest($id_employee, $w_name, $key, $pc, $email, $skype, $incontac
 //NEW SAVE REQUEST
 function saveRequest1($id_employee, $w_name, $array){
 	//CHECKING WHAT ARE THE FIELS SELECTED
-	
 	$key = ($array["key"] == true) ? 1 : 0;
 	$pc = ($array["pc"] == true) ? 1 : 0;
 	$incontact = ($array["incontact"] == true) ? 1 : 0;
@@ -318,6 +317,40 @@ function saveRequestDone($id_employee, $w_name_done, $key_done, $pc_done, $email
 		// return false;
 	return true;
 }
+
+//NE SAVE REQUEST DONE
+function saveRequestDone1($id_employee, $w_name_done, $array){
+	//CHECKING WHAT ARE THE FIELS SELECTED
+	$w_name_done = ($array["w_name_done"] == true) ? 1 : 0;
+	$key_done = ($array["key_done"] == true) ? 1 : 0;
+	$pc_done = ($array["pc_done"] == true) ? 1 : 0;
+	$incontact_done = ($array["incontact_done"] == true) ? 1 : 0;
+	$email_done = ($array["email_done"] == true) ? 1 : 0;
+	$skype_done = ($array["skype_done"] == true) ? 1 : 0;
+	$chat_done = ($array["chat_done"] == true) ? 1 : 0;
+	$box_done = ($array["box_done"] == true) ? 1 : 0;
+		
+	//...UPDATE THAT RECORD 
+	$sql = "UPDATE requests 
+			SET 
+				w_name_set = $w_name_done, 
+				uattendkey_set = $key_done, 
+				pc_set = $pc_done, 
+				email_set = $email_done, 
+				skype_set = $skype_done, 
+				incontact_set = $incontact_done, 
+				chat_set = $chat_done, 
+				box_set = $box_done
+			WHERE id_employee=$id_employee";
+	$result = mysql_query($sql) or die (mysql_error());
+	if(!$result)
+		return false;
+	// if(!sendmail("request", $w_name, $key, $pc, $email, $skype, $incontact, $chat, $box))
+		// return false;
+	return true;
+}
+
+//DB->ARRAY
 function db2Array($data){
 	$arr = array();
 	while($row = mysql_fetch_assoc($data)){
