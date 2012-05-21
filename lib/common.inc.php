@@ -1,6 +1,5 @@
 <?php
 
-// Defining
 define('LIB_PATH', dirname(__FILE__));
 // Defining system path
 define('PATH', realpath(LIB_PATH . '/../'));

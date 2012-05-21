@@ -140,8 +140,8 @@ $id=$row["id_employee"];
 					<td>uAttend Key</td>
 					<td>
 						<input name="request[]" type="checkbox" value="key" <?php if($checkboxes["uattendkey"] == 1) echo "checked"; ?>>
-						<input name="request[]" type="hidden" value="<?=$row["id_employee"]?>">
-						<input name="request[]" type="hidden" value="<?=$row["name_employee"]?>">
+						<input name="id_employee" type="hidden" value="<?=$row["id_employee"]?>">
+						<input name="name_employee" type="hidden" value="<?=$row["name_employee"]?>">
 					</td>
 					<td><input name="request[]" type="checkbox" value="key_done" <?php if($checkboxes["uattendkey_set"] == 1) echo "checked"; ?>></td>
 				</tr>
