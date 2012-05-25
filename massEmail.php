@@ -1,12 +1,6 @@
 <?php
-require_once("model/db.php");
-require_once("model/functions.php");
-
-if ($_SERVER["REQUEST_METHOD"] == POST){
-	echo "EMAIL";
-	print_r ($departments);
-	//header("Location:" . $_SERVER["PHP_SELF"]);
-}else{
+require_once("/model/db.php");
+require_once("/model/functions.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -20,13 +14,16 @@ if ($_SERVER["REQUEST_METHOD"] == POST){
 	</head>
 	<body>
 		<h1>Send Mass Email Notification</h1>
-		<?php include ("menu.html");?>
+		<?php include ("view/menu.html");?>
 		<form action="sendEmail.php"  method="POST" enctype="multipart/form-data">
 			<table border="1">
+				<tr>
+					<td><b>SELECT</b></td>
+					<td><b>DEPARTMENT</b></td>
+				</tr>
 				<?php
 				$departments = getDepartmentsCheckBoxList();
 				//print_r ($departments);
-				
 				foreach ($departments as $department){
 				?>
 				<tr>
@@ -55,6 +52,3 @@ if ($_SERVER["REQUEST_METHOD"] == POST){
 		</form>
 	</body>
 </html>
-<?php
-}
-?>

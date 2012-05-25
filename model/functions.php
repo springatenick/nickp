@@ -1,39 +1,41 @@
 <?php
-//CHECK FOR EMPLOYEE DUPLICATES
-function checkForDuplicates($name){
-	$exsists = 0;
-	$sql = "SELECT * FROM employees";
+//DB -> Array
+function db2Array($data){
+	$arr = array();
+	while($row = mysql_fetch_assoc($data)){
+		$arr[] = $row;
+	}
+return $arr;
+}
+
+//CHECK FOR EMPLOYEE DUPLICATES in addNewTrainee.php
+function checkForDuplicates($name, $phone){
+	$check = false;
+	$sql = "SELECT * FROM `employees`";
 	$result = mysql_query($sql) or die (mysql_error());
 	$row = db2Array($result);
 	foreach($row as $key=>$value){
-		//IF THERE IS A RECORD IN THE TABLE WITH THE SAME ID_EMPLOYEE...
-		if($value["name_employee"] == $name){
-			//THEN CHECK FUNC IS FAILED
-			$check = false;
+		//echo $name . "<br/>";
+		//echo $phone . "<br/>";
+		//echo "K: " . $key . "<br/>";
+		//echo "V: " . $value["name_employee"] . " - " . $value["p_phone"] . "<br/>";
+		//IF THERE IS A RECORD IN THE TABLE WITH THE SAME EMPLOYEE NAME OR PHONE
+		if(($value["name_employee"] == trim($name)) || ($value["p_phone"] == trim($phone))){
+			//echo "MATCH";
+				$check = false; //THEN FUNCTION RETURNS FALSE
+			break;
 		}else{
-			//...OR NOT
-			$check = true;
+			//echo "NO";
+			$check = true; //OTHERWIZE FUNCTION RETURNS TRUE
 		}
 	}
-//print_r($check);
+//echo $check;
 return $check;
 }
 
 //INSERT NEW TRAINEE FUNCTION
-function insert_new_trainee($name, $phone, $dob, $startDate, $cv, $department){
-	//CHECK FOR EMPLOYEE DUPLICATES
-	// if(checkForDuplicates($name, $phone)){
-		// return false;
-	// }
-	//SQL QUERY TO INSERT NEW TRAINEE
-	$sql = "INSERT INTO employees(name_employee, p_phone, dob, start_date, cv, department)
-			VALUES ('$name', '$phone', '$dob', '$startDate', 'cv/" . $name . '.' . $type . "', $department)";
-	//1. EXECUTING THE QUERY
-	$result = mysql_query($sql) or die (mysql_error());
-	if (!$result){
-		return false;
-	}
-	//2.1 CHECKING CV FILE TYPE
+function insert_new_trainee($name, $phone, $dob, $startDate, $cv, $department, $notes){
+	//1. DETERMINE CV FILE TYPE
 	switch ($cv['type']){
 		case 'application/vnd.oasis.opendocument.text':
 			$type = 'odf';
@@ -53,16 +55,147 @@ function insert_new_trainee($name, $phone, $dob, $startDate, $cv, $department){
 		default: return false;	
 	return $type;
 	}
-	//2.2SAVING THE CV FILE IN CV FOLDER
-	if(!copy($cv["tmp_name"], "cv/" . $name . "." . $type)){
+	//2. IF FILE TYPE IS ONE OF THE ABOVE = SQL QUERY TO INSERT NEW TRAINEE
+	$sql = "INSERT INTO `employees`(`name_employee`, `p_phone`, `dob`, `start_date`, `cv`, `department`, `notes`)
+			VALUES ('$name', '$phone', '$dob', '$startDate', 'cv/" . $name . '.' . $type . "', $department, '$notes')";
+	$result = mysql_query($sql) or die (mysql_error());
+	if (!$result)
 		return false;
-	}
+		
+	//3. SAVING THE FILE IN THE CV FOLDER
+	if(!copy($cv["tmp_name"], "cv/" . $name . "." . $type))
+		return false;
+		
 	//3.SENDING AN EMAIL TO TRAINER
-	if (!sendmail("add", $name, $phone, $dob, $startDate)){
+	if (!sendmail("add", $name, $phone, $dob, $startDate))
 		return false;
-	}
+
 return true;
 }
+
+//INSERT NEW EMPLOYEE
+function insert_new_employee($name, $phone, $email, $address, $dateOfBirth, $startDate, $department,
+							$position, $shift, $wage, $w_name, $w_phone_ext, $w_email, $w_skype, $notes){
+	//1. SQL QUERY TO INSERT EMPLOYEE
+	$sql="INSERT INTO `employees`
+						(`name_employee`,`p_phone`,`p_email`,`address`,`dob`,`start_date`,`department`,`position`,`shift`,`wage`,`w_name`,`w_phone_ext`,`w_email`,`w_skype`,`notes`)
+					VALUES
+						('$name','$phone','$email','$address','$dateOfBirth','$startDate',$department,$position,$shift,'$wage','$w_name','$w_phone_ext','$w_email','$w_skype','$notes')";
+	
+	$result = mysql_query($sql) or die (mysql_error());
+	if (!$result)
+		return false;
+
+return true;
+}
+
+//UPDATE EMPLOYEE FUNCTION
+function updateEmployeeRecord($id_employee, $name_employee, $p_phone, $p_email, $address, $dateOfBirth, $department, 
+								$position, $shift, $wage, $w_name, $w_phone_ext, $w_email, $w_skype, $start_date, $notes){
+	//1. SQL QUERY TO UPDATE EMPLOYEE
+	$sql="UPDATE `employees`
+			SET
+				`name_employee`='$name_employee',
+				`p_phone`='$p_phone',
+				`p_email`='$p_email',
+				`address`='$address',
+				`dob`='$dateOfBirth',
+				`department`=$department,
+				`position`=$position,
+				`shift`=$shift,
+				`wage`='$wage',
+				`w_name`='$w_name',
+				`w_phone_ext`='$w_phone_ext',
+				`w_email`='$w_email',
+				`w_skype`='$w_skype',
+				`start_date`='$start_date',
+				`notes`='$notes'
+			WHERE
+				`id_employee`=$id_employee";
+	
+	$result = mysql_query($sql) or die (mysql_error());
+	if (!$result)
+		return false;
+
+return true;
+//TO BE ADDED ON HERE cv= docs_copy= end_date= status=
+}
+
+//ATTACH FILE FUNCTION
+function attachPhoto($file, $id_employee, $name_employee){
+//1. DETERMINE PHOTO FILE TYPE
+	switch ($file['type']){
+		case 'image/png':
+			$type = 'png';
+			break;
+		case 'image/jpeg':
+			$type = 'jpeg';
+			break;
+		case 'image/gif':
+			$type = 'gif';
+			break;						
+		case 'image/bmp':
+			$type = 'bmp';
+			break;
+		default: return false;	
+	return $type;
+	}
+	//2. SQL REQUEST TO UPDATE DB WITH $PARAM PATH
+	$sql="UPDATE `employees`
+			SET
+				`photo`='photos/" . $name_employee . "." . $type ."'		
+			WHERE
+				`id_employee`=$id_employee";
+	//print_r($sql);
+	$result = mysql_query($sql) or die (mysql_error());
+	if (!$result)
+		return false;
+						
+	//3. SAVING THE FILE IN THE $PARAM FOLDER
+	if(!copy($file["tmp_name"], "photos/" . $name_employee . "." . $type))
+		return false;
+
+return true;
+}
+
+
+//ATTACH DOCS FUNCTION
+function attachDoc($file, $id_employee, $name_employee){
+//1. DETERMINE PHOTO FILE TYPE
+	switch ($file['type']){
+		case 'image/png':
+			$type = 'png';
+			break;
+		case 'image/jpeg':
+			$type = 'jpeg';
+			break;
+		case 'image/gif':
+			$type = 'gif';
+			break;						
+		case 'image/bmp':
+			$type = 'bmp';
+			break;
+		default: return false;	
+	return $type;
+	}
+	//2. SQL REQUEST TO UPDATE DB WITH $PARAM PATH
+	$sql="UPDATE `employees`
+			SET
+				`copy_docs`='copy_docs/" . $name_employee . "." . $type ."'		
+			WHERE
+				`id_employee`=$id_employee";
+	//print_r($sql);
+	$result = mysql_query($sql) or die (mysql_error());
+	if (!$result)
+		return false;
+						
+	//3. SAVING THE FILE IN THE $PARAM FOLDER
+	if(!copy($file["tmp_name"], "copy_docs/" . $name_employee . "." . $type))
+		return false;
+
+return true;
+}
+
 
 //EMAIL NOTIFICATION
 function sendmail(/*$type = "add", $param1, $param2, $param3, $param4, $param5, $param6, $param7, $param8*/){
@@ -149,7 +282,21 @@ function getDepartmentsList($department){
 	$result = mysql_query($sql);
 	return $result;
 }
-	
+
+//USED TO DRAW POSITIONS
+function getPositionsList(){
+	$sql = "SELECT * FROM positions";
+	$result = mysql_query($sql) or die (mysql_error());
+	return db2Array($result);
+}
+
+//USED TO DRAW SHIFTS
+function getShiftsList(){
+	$sql = "SELECT * FROM `shifts`";
+	$result = mysql_query($sql) or die (mysql_error());
+	return db2Array($result);
+}
+
 //USED TO DRAW EMPLOYEE INFORMATION edit.php
 function getEmployeeInfo($id){
 	$sql = "SELECT c.id_country, c.name_country, 
@@ -157,7 +304,7 @@ function getEmployeeInfo($id){
 				d.id_department, d.name_department, 
 				e.id_employee, e.name_employee, e.w_name, e.department, e.address, 
 				e.p_phone, e.w_phone_ext, e.p_email, e.w_email, 
-				e.w_skype, e.position, e.status, e.start_date, e.notes
+				e.w_skype, e.position, e.status, e.start_date, e.notes, e.wage, e.shift, e.dob, e.photo, e.copy_docs
 			FROM countries c INNER JOIN
 					(locations l INNER JOIN
 						(departments d INNER JOIN employees e
@@ -170,16 +317,16 @@ return $result;
 }
 
 //USED TO SAVE REQUEST PARAMETERS from editEmployee.php
-function saveRequest($id_employee, $w_name, $key, $pc, $email, $skype, $incontact, $chat, $box){
+function saveRequest($id_employee, $w_name, $array){
 	//CHECKING WHAT ARE THE FIELS SELECTED
-	$w_name = isset($w_name) ? 1 : 0;
-	$key = isset($key) ? 1 : 0;
-	$pc = isset($pc) ? 1 : 0;
-	$incontact = isset($incontact) ? 1 : 0;
-	$email = isset($email) ? 1 : 0;
-	$skype = isset($skype) ? 1 : 0;
-	$chat = isset($chat) ? 1 : 0;
-	$box = isset($box) ? 1 : 0;
+	$w_name = ($array["w_name"] == true) ? 1 : 0;
+	$key = ($array["key"] == true) ? 1 : 0;
+	$pc = ($array["pc"] == true) ? 1 : 0;
+	$incontact = ($array["incontact"] == true) ? 1 : 0;
+	$email = ($array["email"] == true) ? 1 : 0;
+	$skype = ($array["skype"] == true) ? 1 : 0;
+	$chat = ($array["chat"] == true) ? 1 : 0;
+	$box = ($array["box"] == true) ? 1 : 0;
 		
 	//CHECKING IF THERE IS ANY REQUEST IN THE REQUESTS TABLE FOR THIS EMPLOYEE
 	$exsists = 0;
@@ -193,25 +340,30 @@ function saveRequest($id_employee, $w_name, $key, $pc, $email, $skype, $incontac
 				$exsists = 0;
 			}
 		}
-		//echo $exsists;
+		// echo "ID:" . $id_employee;
+		// echo "<br/>";
+		// echo "NAME:" . $w_name;
+		// echo "<br/>";
+		// echo "EXISTS:" . $exsists;
+		// echo "<br/>";
 		switch ($exsists){
 			case 1:
 				//...UPDATE THAT RECORD 
-				$sql = "UPDATE requests 
+				$sql = "UPDATE `requests`
 						SET 
-							w_name = $w_name, 
-							uattendkey = $key, 
-							pc = $pc, 
-							email = $email, 
-							skype = $skype, 
-							incontact = $incontact, 
-							chat = $chat, 
-							box = $box
-						WHERE id_employee=$id_employee";
+							`id_employee`=$id_employee,
+							`uattendkey`=$key,
+							`pc`=$pc,
+							`email`=$email,
+							`skype`=$skype,
+							`incontact`=$incontact,
+							`chat`=$chat,
+							`box`=$box
+						WHERE `id_employee`=$id_employee";
 			break;
 			case 0:
 				//...INSERT NEW
-				$sql = "INSERT INTO requests(id_employee, w_name, uattendkey, pc, email, skype, incontact, chat, box)
+				$sql = "INSERT INTO `requests`(`id_employee`, `w_name`, `uattendkey`, `pc`, `email`, `skype`, `incontact`, `chat`, `box`)
 							 VALUES($id_employee, $w_name, $key, $pc, $email, $skype, $incontact, $chat, $box)";
 			break;
 		return $sql;
@@ -224,17 +376,18 @@ function saveRequest($id_employee, $w_name, $key, $pc, $email, $skype, $incontac
 			return false;
 	return true;
 }
+
 //USED TO SAVE REQUEST_DONE PARAMETERS from editEmployee.php
-function saveRequestDone($id_employee, $w_name_done, $key_done, $pc_done, $email_done, $skype_done, $incontact_done, $chat_done, $box_done){
+function saveRequestDone($id_employee, $array){
 	//CHECKING WHAT ARE THE FIELS SELECTED
-	$w_name_done = isset($w_name_done) ? 1 : 0;
-	$key_done = isset($key_done) ? 1 : 0;
-	$pc_done = isset($pc_done) ? 1 : 0;
-	$incontact_done = isset($incontact_done) ? 1 : 0;
-	$email_done = isset($email_done) ? 1 : 0;
-	$skype_done = isset($skype_done) ? 1 : 0;
-	$chat_done = isset($chat_done) ? 1 : 0;
-	$box_done = isset($box_done) ? 1 : 0;
+	$w_name_done = ($array["w_name_done"] == true) ? 1 : 0;
+	$key_done = ($array["key_done"] == true) ? 1 : 0;
+	$pc_done = ($array["pc_done"] == true) ? 1 : 0;
+	$incontact_done = ($array["incontact_done"] == true) ? 1 : 0;
+	$email_done = ($array["email_done"] == true) ? 1 : 0;
+	$skype_done = ($array["skype_done"] == true) ? 1 : 0;
+	$chat_done = ($array["chat_done"] == true) ? 1 : 0;
+	$box_done = ($array["box_done"] == true) ? 1 : 0;
 		
 	//...UPDATE THAT RECORD 
 	$sql = "UPDATE requests 
@@ -255,14 +408,8 @@ function saveRequestDone($id_employee, $w_name_done, $key_done, $pc_done, $email
 		// return false;
 	return true;
 }
-function db2Array($data){
-	$arr = array();
-	while($row = mysql_fetch_assoc($data)){
-		$arr[] = $row;
-	}
-return $arr;
-}
 
+//FOR DONE REQUEST REPORTS TO SHOW UP ON THE EMPLOYEE PAGE
 function checkChecked($id){
 	//CHECKING IF THERE IS ANY REQUEST IN THE REQUESTS TABLE FOR THIS EMPLOYEE
 	$sql = "SELECT * FROM requests";
@@ -281,7 +428,7 @@ function checkChecked($id){
 
 //USED TO DRAW DEPARTMENTS CHECKBOXES in massEmail.php
 function getDepartmentsCheckBoxList(){
-	$sql = "SELECT * FROM departments";
+	$sql = "SELECT * FROM `departments` ORDER by `name_department`";
 	$result = mysql_query ($sql) or die (mysql_error());
 	return db2Array($result);	
 }

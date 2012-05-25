@@ -3,18 +3,18 @@
 	<head>
 		<title>Add a New Trainee</title>
 		<meta content="text/html; charset=windows-1251" http-equiv="Content-Type">
-		<link href="calendar/calendar.css" rel="stylesheet" type="text/css" />
-		<script language="javascript" src="calendar/calendar.js"></script>
-		<script type="text/javascript" src="model/jquery-1.4.2.min.js"></script>
-		<script type="text/javascript" src="model/ajax.js"></script>
+		<link href="/calendar/calendar.css" rel="stylesheet" type="text/css" />
+		<script language="javascript" src="/calendar/calendar.js"></script>
+		<script type="text/javascript" src="/model/jquery-1.4.2.min.js"></script>
+		<script type="text/javascript" src="/model/ajax.js"></script>
 	</head>
 	<body>
 	<h1>Add a New Trainee</h1>
 <?
-include ("menu.html");
-require_once("model/db.php");
-require_once("model/functions.php");
-require_once("calendar/classes/tc_calendar.php");
+include ("/view/menu.html");
+require_once("/model/db.php");
+require_once("/model/functions.php");
+require_once("/calendar/classes/tc_calendar.php");
 ?>
 		<form action="addNewTrainee.php" method="POST" enctype="multipart/form-data">
 			<table border="1">
@@ -80,6 +80,12 @@ require_once("calendar/classes/tc_calendar.php");
 				<tr>
 					<td>Department:</td>
 					<td><select id="departmentDropdown" name="departmentDropdown" disabled="disabled"></select></td>
+				</tr>
+				<tr>
+					<td>Interview Notes:</td>
+					<td>
+						<textarea name="notes"></textarea>
+					</td>
 				</tr>
 				<tr>
 					<td colspan="2"><input type="submit" value="SAVE"></td>

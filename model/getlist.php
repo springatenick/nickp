@@ -30,9 +30,31 @@ $result = getDepartmentsList($_POST["department"]);
 		<td><?=$row["p_email"]?></td>
 		<td><?=$row["address"]?></td>
 		<td><?=$row["dob"]?></td>
-		<td><?=$row["department"]?></td>
-		<td><?=$row["position"]?></td>
-		<td><?=$row["shift"]?></td>
+		<td>
+			<?php
+				$department_sql="SELECT `name_department` FROM `departments` WHERE `id_department`=" . $row["department"];
+				//print_r($department_sql);
+				$department_result=mysql_query($department_sql) or die (mysql_error());
+				$department_row=mysql_fetch_assoc($department_result);
+				echo $department_row["name_department"];
+			?>
+		</td>
+		<td>
+			<?php
+				$position_sql="SELECT `name_position` FROM `positions` WHERE `id_position`=" . $row["position"];
+				$position_result=mysql_query($position_sql) or die (mysql_error());
+				$position_row=mysql_fetch_assoc($position_result);
+				echo $position_row["name_position"];
+			?>
+		</td>
+		<td>
+			<?php
+				$shift_sql="SELECT `name_shift` FROM `shifts` WHERE `id_shift`=" . $row["shift"];
+				$shift_result=mysql_query($shift_sql) or die (mysql_error());
+				$shift_row=mysql_fetch_assoc($shift_result);
+				echo $shift_row["name_shift"];
+			?>
+		</td>
 		<td><?=$row["wage"]?></td>
 		<td><?=$row["w_name"]?></td>
 		<td><?=$row["w_phone_ext"]?></td>

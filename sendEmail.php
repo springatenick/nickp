@@ -3,7 +3,7 @@ require_once("model/db.php");
 require_once("model/functions.php");
 
 //RECEIVE ARRAY OF DEPARTMENTS FROM $_POST["DEPARTMENT"]
-$sql = "SELECT w_email FROM employees WHERE";
+$sql = "SELECT `w_email` FROM `employees` WHERE";
 if(count($_POST["department"]) == 1){
 	$sql .= " department=" . $_POST["department"][0];
 }elseif(count($_POST["department"]) > 1){
@@ -26,21 +26,10 @@ $message = $_POST["message"];
 $header = "FROM:" . $_POST["email"];
 
 if(mail($list, $subject, $message, $header)){
-	header("Refresh: 5; URL=massEmail.php");
-	?>
-		<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-		<html>
-		<head>
-		<title><?echo "Your Email was Successfully Sent."?></title>
-		<meta content="text/html; charset=windows-1251" http-equiv="Content-Type">
-		<link href="calendar/calendar.css" rel="stylesheet" type="text/css" />
-	<?
-		$names = implode(",<br/>",($emailList));
-		echo "<h1>Your Email was Successfully Sent to:\n</h1><p>$names</p>";
-		exit;
+	$content="/view/massMailSent.php";
 }
 else{
-	echo "NO";
+	$content="/view/massMailSendError.php";
 }
-
+include($content);
 ?>
